@@ -1,0 +1,50 @@
+---
+title: "Growth Curves and glmlss"
+author: "Ian Handel"
+date: "31/10/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+library(gamlss)
+library(gamlss.nl)
+
+set.seed(113)
+```
+
+# Simulate some growth curves
+```{r}
+N <- 100
+dat <- tibble(id = 1:N,
+              rates = rnorm(N, 0.01, 0.001),
+              assym = rnorm(N, 50, 5)) %>% 
+  inner_join(as_tibble(expand.grid(id = 1:N,
+                                   days = seq(5, 1000, 5)))) %>% 
+  mutate(weight = assym * (1 - exp(-days * rates)) + rnorm(nrow(.), 0, 1)) %>% 
+  sample_frac(0.05)
+```
+
+# Plot them
+```{r}
+
+ggplot(dat, aes(x = days, y = weight, group = id)) +
+  geom_line(alpha = 0.3)
+```
+
+# Now fit nodel
+```{r}
+mod <- nlgamlss(weight ~ days,
+                mu.formula = ~ A * (1 - exp(- days * B)),
+                sigma.formula = ~ C + D * days,
+                data = dat, family = NO,
+                mu.fix = FALSE,
+                sigma.fix = FALSE,
+                mu.start = c(1, 1),
+                sigma.start = c(1, 1))
+```
+
