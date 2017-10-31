@@ -1,7 +1,7 @@
 # Growth curve centiles
 
 
-Simulate soem growth curves then try and fot with nlgamlss
+Simulate some growth curves then try and fit with nlgamlss()
 
 Ultimately aim to estimate centiles
 
