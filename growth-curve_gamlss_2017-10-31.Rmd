@@ -38,7 +38,7 @@ ggplot(dat, aes(x = days, y = weight, group = id)) +
 
 # Now fit nodel
 ```{r}
-mod <- nlgamlss(weight ~ days,
+mod <- nlgamlss(weight ~ 1,
                 mu.formula = ~ A * (1 - exp(- days * B)),
                 sigma.formula = ~ C + D * days,
                 data = dat, family = NO,
