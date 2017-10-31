@@ -6,11 +6,16 @@ Ian Handel
 Simulate some growth curves
 ---------------------------
 
+Rate mean for simulation: 0.01
+
+Assym mean for simulation: 37
+
 ``` r
 N <- 200
+
 dat <- tibble(id = 1:N,
-              rates = rnorm(N, 0.01, 0.001),
-              assym = rnorm(N, 37, 5)) %>% 
+              rates = rnorm(N, rate_mean, 0.001),
+              assym = rnorm(N, assym_mean, 5)) %>% 
   inner_join(as_tibble(expand.grid(id = 1:N,
                                    days = seq(5, 1000, 5))),
              by = "id") %>% 

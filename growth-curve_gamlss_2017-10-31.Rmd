@@ -4,6 +4,7 @@ author: "Ian Handel"
 date: "31/10/2017"
 output: 
   github_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -19,17 +20,26 @@ set.seed(113)
 ```
 
 ## Simulate some growth curves
+
+Rate mean for simulation: `r (rate_mean <- 0.01)`
+
+Assym mean for simulation: `r (assym_mean <- 37)`
+
 ```{r}
 N <- 200
+
 dat <- tibble(id = 1:N,
-              rates = rnorm(N, 0.01, 0.001),
-              assym = rnorm(N, 37, 5)) %>% 
+              rates = rnorm(N, rate_mean, 0.001),
+              assym = rnorm(N, assym_mean, 5)) %>% 
   inner_join(as_tibble(expand.grid(id = 1:N,
                                    days = seq(5, 1000, 5))),
              by = "id") %>% 
   mutate(weight = assym * (1 - exp(-days * rates)) + rnorm(nrow(.), 0, 1)) %>% 
   sample_frac(0.05)
 ```
+
+
+
 
 ## Plot them
 ```{r}
