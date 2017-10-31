@@ -1,8 +1,9 @@
 ---
-title: "Growth Curves and glmlss"
+title: "Growth Curves and gamlss()"
 author: "Ian Handel"
 date: "31/10/2017"
-output: html_document
+output: 
+  github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -17,35 +18,38 @@ library(gamlss.nl)
 set.seed(113)
 ```
 
-# Simulate some growth curves
+## Simulate some growth curves
 ```{r}
-N <- 100
+N <- 200
 dat <- tibble(id = 1:N,
               rates = rnorm(N, 0.01, 0.001),
-              assym = rnorm(N, 50, 5)) %>% 
+              assym = rnorm(N, 37, 5)) %>% 
   inner_join(as_tibble(expand.grid(id = 1:N,
-                                   days = seq(5, 1000, 5)))) %>% 
+                                   days = seq(5, 1000, 5))),
+             by = "id") %>% 
   mutate(weight = assym * (1 - exp(-days * rates)) + rnorm(nrow(.), 0, 1)) %>% 
   sample_frac(0.05)
 ```
 
-# Plot them
+## Plot them
 ```{r}
 
 ggplot(dat, aes(x = days, y = weight, group = id)) +
   geom_line(alpha = 0.3)
 ```
 
-# Now fit nodel
-```{r}
-mod <- nlgamlss(weight ~ 1,
+## Now fit model
+```{r, warning=FALSE}
+mod <- nlgamlss(y = weight,
                 mu.formula = ~ A * (1 - exp(- days * B)),
-                sigma.formula = ~ C + D * days,
+                sigma.formula = ~ 1,
                 data = dat,
                 family = NO,
                 mu.fix = FALSE,
                 sigma.fix = FALSE,
-                mu.start = c(1, 1),
-                sigma.start = c(1, 1))
+                mu.start = c(100, 0.1),
+                sigma.start = 10)
+
+summary(mod)
 ```
 
