@@ -1,7 +1,7 @@
 all: growth-curve_gamlss_2017-10-31.md growth-curve_gamlss_2017-10-31.html
 
 clean:
-	rm -f *.md
+	rm -f growth-curve_gamlss_2017-10-31.md
 	rm -f *.html
 	rm -rf growth-curve_gamlss_2017-10-31_files/
   
